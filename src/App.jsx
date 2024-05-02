@@ -1,54 +1,60 @@
 import { useState } from "react";
 import "./App.css";
 
-import User from "./assets/components/User";
+import User from "./components/User";
 import { useEffect } from "react";
-
+import Counter from "./features/counter/Counter";
 
 function App() {
+  const url = "https://jsonplaceholder.org/users";
 
-  const url = "https://jsonplaceholder.org/users"
+  const [users, setUsers] = useState(null);
+  const [error, setError] = useState(null);
 
-  const [users, setUsers] = useState(null)
-  const[error, setError] = useState(null)
-
-  const fetchUsers = async () =>  {
-
+  const fetchUsers = async () => {
     const response = await fetch(url);
 
-    if(!response.ok){
-      console.log("Some error occured" + response.status)
-      setError(response.error)
+    if (!response.ok) {
+      console.log("Some error occured" + response.status);
+      setError(response.error);
     }
 
-    let userData = await response.json()
-    setUsers(userData)
-    console.log(userData)
+    let userData = await response.json();
+    setUsers(userData);
+    console.log(userData);
     // return userData;
-  }
+  };
 
   const reset = () => {
-    setUsers(null)
-  }
+    setUsers(null);
+  };
 
-  const reload = () =>{
-    fetchUsers()
-  }
+  const reload = () => {
+    fetchUsers();
+  };
 
-  useEffect(() =>{
-   fetchUsers()
-  },[])
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   return (
     <>
-  <h4>User List</h4>
-  <button onClick={reset}>Reset</button>
-  <button onClick={reload}>Reload</button>
+      <Counter></Counter>
+      <h4>User List</h4>
+      <button onClick={reset}>Reset</button>
+      <button onClick={reload}>Reload</button>
 
-   {users && users.map((u) => {
-      return  (<User key={u.id} id={u.id} firstName={u.firstname} lastName={u.lastname}/>)
-   })
-   }
+      {users &&
+        users.map((u) => {
+          return (
+            <User
+              key={u.id}
+              id={u.id}
+              firstName={u.firstname}
+              lastName={u.lastname}
+            />
+          );
+        })}
     </>
   );
 }
